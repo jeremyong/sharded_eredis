@@ -3,20 +3,20 @@
 eredis_pool is Pool of Redis clients, using eredis and poolboy.
 
 This fork modifies the
-[[original|https://github.com/hiroeorz/eredis_pool]] by including a
+[original](https://github.com/hiroeorz/eredis_pool) by including a
 consistent hashing library to simplify presharding, suggested by
 antirez. Read the original blogpost
-[[here|http://oldblog.antirez.com/post/redis-presharding.html]]. 
+[here](http://oldblog.antirez.com/post/redis-presharding.html).
 
 eredis:
-[[https://github.com/wooga/eredis]]
+https://github.com/wooga/eredis
 
 poolboy:
-[[https://github.com/devinus/poolboy]]
+https://github.com/devinus/poolboy
 
 ## Setup
 
-- git clone git://github.com/hiroeorz/eredis_pool.git
+- git clone git://github.com/jeremyong/eredis_pool.git
 - cd eredis_pool
 - make get-deps
 - make
@@ -51,14 +51,16 @@ edit src/eredis_pool.app.src
   ]}.
 ```
 
-add new pools.
+Add new pools. This configuration specifies 4 shards.
 
 ```erlang
   {env, [
           {pools, [
-                   {default, [
+                   {pool0, [
                               {size, 10},
                               {max_overflow, 20}
+                              {host, "127.0.0.1"},
+                              {port, 6378}
                              ]},
                    {pool1, [
                               {size, 30},
@@ -70,10 +72,13 @@ add new pools.
                               {size, 20},
                               {max_overflow, 20},
                               {host, "127.0.0.1"},
-                              {port, 6379},
-                              {database, "user_db"},
-                              {password, "abc"},
-                              {reconnect_sleep, 100}
+                              {port, 6380},
+                             ]}
+                   {pool3, [
+                              {size, 20},
+                              {max_overflow, 20},
+                              {host, "127.0.0.1"},
+                              {port, 6380},
                              ]}
                   ]}
         ]}
@@ -90,36 +95,12 @@ application start.
 
 key-value set and get
 ```erlang
- eredis_pool:q({global, dbsrv}, ["SET", "foo", "bar"]).
+ eredis_pool:q(["SET", "foo", "bar"]).
  {ok,<<"OK">>}
  
- eredis_pool:q({global, dbsrv}, ["GET", "foo"]).       
+ eredis_pool:q(["GET", "foo"]).       
  {ok,<<"bar">>}
 ```
  
-create new pool with default settings.
-```erlang
- eredis_pool:create_pool(pool1, 10).
- {ok,<0.64.0>}
-```
-
-and omissible argments(host, port, database, password reconnect_sleep).
-```erlang
- eredis_pool:create_pool(pool1, 10, "127.0.0.1", 6379, "user_db", "abc", 100).
- {ok,<0.64.0>}
-```
-
-using new pool
-```erlang
- eredis_pool:q(pool1, ["GET", "foo"]).
- {ok,<<"bar">>}
-```
-
-delete pool
-```erlang
- eredis_pool:delete_pool(pool1).    
- ok
-```
-
 Other commands are here.
 http://redis.io/commands
