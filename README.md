@@ -1,26 +1,29 @@
-= eredis_pool
+# eredis_pool
 
 eredis_pool is Pool of Redis clients, using eredis and poolboy.
 
 eredis:
-https://github.com/jdavisp3/eredis
+[[https://github.com/wooga/eredis]]
 
 poolboy:
-https://github.com/devinus/poolboy
+[[https://github.com/devinus/poolboy]]
 
-==Setup
+## Setup
 
- $ git clone git://github.com/hiroeorz/eredis_pool.git
- $ cd eredis_pool
- $ make get-deps
- $ make
+- git clone git://github.com/hiroeorz/eredis_pool.git
+- cd eredis_pool
+- make get-deps
+- make
 
-==Testing
- $ make check
+## Testing
 
-==Settings
+make check
+
+## Settings
+
 edit src/eredis_pool.app.src
 
+```erlang
  {application, eredis_pool,
   [
    {description, ""},
@@ -40,8 +43,11 @@ edit src/eredis_pool.app.src
                    ]}
          ]}
   ]}.
+```
 
 add new pools.
+
+```erlang
   {env, [
           {pools, [
                    {default, [
@@ -65,36 +71,49 @@ add new pools.
                              ]}
                   ]}
         ]}
+```
 
 
-==Examples
+## Examples
 
 application start.
+```erlang
  eredis_pool:start().
  ok
+```
 
 key-value set and get
+```erlang
  eredis_pool:q({global, dbsrv}, ["SET", "foo", "bar"]).
  {ok,<<"OK">>}
  
  eredis_pool:q({global, dbsrv}, ["GET", "foo"]).       
  {ok,<<"bar">>}
+```
  
 create new pool with default settings.
+```erlang
  eredis_pool:create_pool(pool1, 10).
  {ok,<0.64.0>}
+```
 
 and omissible argments(host, port, database, password reconnect_sleep).
+```erlang
  eredis_pool:create_pool(pool1, 10, "127.0.0.1", 6379, "user_db", "abc", 100).
  {ok,<0.64.0>}
+```
 
 using new pool
+```erlang
  eredis_pool:q(pool1, ["GET", "foo"]).
  {ok,<<"bar">>}
+```
 
 delete pool
+```erlang
  eredis_pool:delete_pool(pool1).    
  ok
+```
 
-Other commands is here.
+Other commands are here.
 http://redis.io/commands
