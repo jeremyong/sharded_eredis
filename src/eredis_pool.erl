@@ -17,7 +17,7 @@
 
 %% API
 -export([start/0, stop/0]).
--export([q/2, q/3, transaction/2,
+-export([q/1, q/2, transaction/2,
          create_pool/2, create_pool/3, create_pool/4, create_pool/5,
          create_pool/6, create_pool/7, 
          delete_pool/1]).
@@ -87,7 +87,7 @@ create_pool(PoolName, Size, Host, Port, Database, Password, ReconnectSleep) ->
 
 
 %% ===================================================================
-%% @doc delet pool and disconnected to Redis.
+%% @doc delete pool and disconnect from Redis.
 %% @end
 %% ===================================================================
 -spec(delete_pool(PoolName::atom()) -> ok | {error,not_found}).
@@ -103,32 +103,48 @@ delete_pool(PoolName) ->
 %% always be binaries.
 %% @end
 %%--------------------------------------------------------------------
--spec q(PoolName::atom(), Command::iolist()) ->
-               {ok, binary() | [binary()]} | {error, Reason::binary()}.
 
-q(PoolName, Command) ->
-    q(PoolName, Command, ?TIMEOUT).
 
--spec q(PoolName::atom(), Command::iolist(), Timeout::integer()) ->
-               {ok, binary() | [binary()]} | {error, Reason::binary()}.
+-spec q(Command::iolist()) ->
+    {ok, binary() | [binary()]} | {error, Reason::binary()}.
 
-q(PoolName, Command, Timeout) ->
-    poolboy:transaction(PoolName, fun(Worker) ->
-                                          eredis:q(Worker, Command, Timeout)
-                                  end).
+q(Command) ->
+    q(Command, ?TIMEOUT).
 
-transaction(PoolName, Fun) when is_function(Fun) ->
+-spec q(Command::iolist(), Timeout::integer()) ->
+    {ok, binary() | [binary()]} | {error, Reason::binary()}.
+
+q(Command = [_, Key|_], Timeout) ->
+    Node = eredis_pool_chash:lookup(Key),
+    poolboy:transaction(Node, fun(Worker) ->
+                                      eredis:q(Worker, Command, Timeout)
+                              end).
+
+transaction(Key, Fun) when is_function(Fun) ->
+    Node = eredis_pool_chash:lookup(Key),
     F = fun(C) ->
                 try
-                    {ok, <<"OK">>} = eredis:q(C, ["MULTI"]),
-                    Fun(C),
-                    eredis:q(C, ["EXEC"])
+                  {ok, <<"OK">>} = q2(C, ["MULTI"]),
+                  Fun(C),
+                  eredis:q2(C, ["EXEC"])
                 catch C:Reason ->
-                        {ok, <<"OK">>} = eredis:q(C, ["DISCARD"]),
-                        io:format("Error in redis transaction. ~p:~p", 
-                                  [C, Reason]),
-                        {error, Reason}
-                end
-        end,
+                       {ok, <<"OK">>} = q2(C, ["DISCARD"]),
+                       io:format("Error in redis transaction. ~p:~p", 
+                                 [C, Reason]),
+                       {error, Reason}
+               end
+    end,
 
-    poolboy:transaction(PoolName, F).    
+    poolboy:transaction(Node, F).    
+
+-spec q2(Node::term(), Command::iolist()) ->
+    {ok, binary() | [binary()]} | {error, Reason::binary()}.
+q2(Node, Command) ->
+    q2(Node, Command, ?TIMEOUT).
+
+-spec q2(Node::term(), Command::iolist(), Timeout::integer()) ->
+    {ok, binary() | [binary()]} | {error, Reason::binary()}.
+q2(Node, Command, Timeout) ->
+    poolboy:transaction(Node, fun(Worker) ->
+                                      eredis:q(Worker, Command, Timeout)
+                              end).

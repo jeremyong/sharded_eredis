@@ -22,7 +22,8 @@
 
 start_link() ->
     {ok, Pools} = application:get_env(eredis_pool, pools),
-    start_link(Pools, global).
+    {ok, GlobalOrLocal} = application:get_env(eredis_pool, global_or_local),
+    start_link(Pools, GlobalOrLocal).
 
 start_link(Pools, GlobalOrLocal) ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, [Pools, GlobalOrLocal]).
@@ -70,6 +71,10 @@ init([Pools, GlobalOrLocal]) ->
     Restart = permanent,
     Shutdown = 5000,
     Type = worker,
+    
+    {Nodes, _} = lists:unzip(Pools),
+    Ring = eredis_pool_chash:create_ring(Nodes),
+    ok = application:set_env(eredis_pool, ring, Ring),
 
     PoolSpecs = lists:map(fun({PoolName, PoolConfig}) ->
                                   Args = [{name, {GlobalOrLocal, PoolName}},

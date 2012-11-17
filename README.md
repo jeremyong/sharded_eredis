@@ -2,6 +2,12 @@
 
 eredis_pool is Pool of Redis clients, using eredis and poolboy.
 
+This fork modifies the
+[[original|https://github.com/hiroeorz/eredis_pool]] by including a
+consistent hashing library to simplify presharding, suggested by
+antirez. Read the original blogpost
+[[here|http://oldblog.antirez.com/post/redis-presharding.html]]. 
+
 eredis:
 [[https://github.com/wooga/eredis]]
 

@@ -1,6 +1,6 @@
 -module(eredis_pool_chash).
 
--export([lookup/2, create_ring/1]).
+-export([lookup/1, create_ring/1]).
 
 %% @doc The consistent hash ring spans from 0 to 2^160 - 1.
 -define(RINGUPPER, trunc(math:pow(2,160) - 1)).
@@ -8,8 +8,9 @@
 -type cnode() :: term().
 -type cring() :: [{integer(), cnode()}].
 
--spec lookup(term(), cring()) -> cnode().
-lookup(Key, Ring) ->
+-spec lookup(term()) -> cnode().
+lookup(Key) ->
+    Ring = application:get_env(eredis_pool, ring),
     Hash = hash(Key),
     {{_, Node}, {_, Max}} =
         lists:foldl(fun({C, CNode}, {{L,LNode}, {U,UNode}}) ->

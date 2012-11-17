@@ -13,6 +13,7 @@
 %% sample configuration.
 %%
 %%  {env, [
+%%          {global_or_local, local},
 %%          {pools, [
 %%                   {dbsrv, [
 %%                              {size, 10},
