@@ -1,5 +1,5 @@
 
--module(eredis_pool_sup).
+-module(sharded_eredis_sup).
 
 -behaviour(supervisor).
 
@@ -20,8 +20,8 @@
 %% ===================================================================
 
 start_link() ->
-    {ok, Pools} = application:get_env(eredis_pool, pools),
-    {ok, GlobalOrLocal} = application:get_env(eredis_pool, global_or_local),
+    {ok, Pools} = application:get_env(sharded_eredis, pools),
+    {ok, GlobalOrLocal} = application:get_env(sharded_eredis, global_or_local),
     start_link(Pools, GlobalOrLocal).
 
 start_link(Pools, GlobalOrLocal) ->
@@ -43,8 +43,8 @@ init([Pools, GlobalOrLocal]) ->
     Type = worker,
     
     {Nodes, _} = lists:unzip(Pools),
-    Ring = eredis_pool_chash:create_ring(Nodes),
-    ok = application:set_env(eredis_pool, ring, Ring),
+    Ring = sharded_eredis_chash:create_ring(Nodes),
+    ok = application:set_env(sharded_eredis, ring, Ring),
 
     PoolSpecs = lists:map(fun({PoolName, PoolConfig}) ->
                                   Args = [{name, {GlobalOrLocal, PoolName}},

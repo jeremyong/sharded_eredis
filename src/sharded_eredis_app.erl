@@ -1,4 +1,4 @@
--module(eredis_pool_app).
+-module(sharded_eredis_app).
 
 -behaviour(application).
 
@@ -10,7 +10,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    eredis_pool_sup:start_link().
+    sharded_eredis_sup:start_link().
 
 stop(_State) ->
     ok.

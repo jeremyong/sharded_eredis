@@ -1,4 +1,4 @@
--module(eredis_pool_chash).
+-module(sharded_eredis_chash).
 
 -export([lookup/1, create_ring/1]).
 
@@ -10,7 +10,7 @@
 
 -spec lookup(term()) -> cnode().
 lookup(Key) ->
-    Ring = application:get_env(eredis_pool, ring),
+    Ring = application:get_env(sharded_eredis, ring),
     Hash = hash(Key),
     {{_, Node}, {_, Max}} =
         lists:foldl(fun({C, CNode}, {{L,LNode}, {U,UNode}}) ->

@@ -1,4 +1,4 @@
-{application, eredis_pool,
+{application, sharded_eredis,
  [
   {description, ""},
   {vsn, "1.1"},
@@ -7,7 +7,7 @@
                   kernel,
                   stdlib
                  ]},
-  {mod, { eredis_pool_app, []}},
+  {mod, { sharded_eredis_app, []}},
   {env, []}
 
 %% sample configuration.

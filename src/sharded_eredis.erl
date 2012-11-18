@@ -5,8 +5,9 @@
 %%%
 %%% @end
 %%% Created :  9 Oct 2011 by Hiroe Shin <shin@mac-hiroe-orz-17.local>
+%%% @author Jeremy Ong <jeremy@playmesh.com>
 %%%-------------------------------------------------------------------
--module(eredis_pool).
+-module(sharded_eredis).
 
 %% Include
 -include_lib("eunit/include/eunit.hrl").
@@ -49,13 +50,13 @@ q(Command) ->
     {ok, binary() | [binary()]} | {error, Reason::binary()}.
 
 q(Command = [_, Key|_], Timeout) ->
-    Node = eredis_pool_chash:lookup(Key),
+    Node = sharded_eredis_chash:lookup(Key),
     poolboy:transaction(Node, fun(Worker) ->
                                       eredis:q(Worker, Command, Timeout)
                               end).
 
 transaction(Key, Fun) when is_function(Fun) ->
-    Node = eredis_pool_chash:lookup(Key),
+    Node = sharded_eredis_chash:lookup(Key),
     F = fun(C) ->
                 try
                   {ok, <<"OK">>} = q2(C, ["MULTI"]),

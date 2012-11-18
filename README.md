@@ -1,12 +1,17 @@
-# eredis_pool
+# sharded_eredis
 
-eredis_pool is Pool of Redis clients, using eredis and poolboy.
+**sharded_eredis** is collection of pools of Redis clients, using eredis
+and poolboy. Each pool points to a different shard.
 
 This fork modifies the
-[original](https://github.com/hiroeorz/eredis_pool) by including a
+[original](https://github.com/hiroeorz/eredis_pool) repository by including a
 consistent hashing library to simplify presharding, suggested by
 antirez. Read the original blogpost
 [here](http://oldblog.antirez.com/post/redis-presharding.html).
+
+The name has been changed so as not to induce confusion for those
+originally using hiroeorz's sharded_eredis; the functionality has changed
+significantly.
 
 eredis:
 https://github.com/wooga/eredis
@@ -16,7 +21,7 @@ https://github.com/devinus/poolboy
 
 ## Setup
 
-- git clone git://github.com/jeremyong/eredis_pool.git
+- git clone git://github.com/jeremyong/sharded_eredis.git
 - cd eredis_pool
 - make get-deps
 - make
@@ -27,10 +32,10 @@ make check
 
 ## Settings
 
-edit src/eredis_pool.app.src
+edit src/sharded_eredis.app.src
 
 ```erlang
- {application, eredis_pool,
+ {application, sharded_eredis,
   [
    {description, ""},
    {vsn, "1"},
@@ -39,7 +44,7 @@ edit src/eredis_pool.app.src
                    kernel,
                    stdlib
                   ]},
-   {mod, { eredis_pool_app, []}},
+   {mod, { sharded_eredis_app, []}},
    {env, [
            {pools, [
                     {default, [
@@ -89,18 +94,21 @@ Add new pools. This configuration specifies 4 shards.
 
 application start.
 ```erlang
- eredis_pool:start().
+ sharded_eredis:start().
  ok
 ```
 
 key-value set and get
 ```erlang
- eredis_pool:q(["SET", "foo", "bar"]).
+ sharded_eredis:q(["SET", "foo", "bar"]).
  {ok,<<"OK">>}
  
- eredis_pool:q(["GET", "foo"]).       
+ sharded_eredis:q(["GET", "foo"]).       
  {ok,<<"bar">>}
 ```
+
+Note that the name of the pool does not need to be supplied with each
+query. The library will automatically determine which pool associated
+to the correct shard should be invoked.
  
-Other commands are here.
-http://redis.io/commands
+The Redis documentation can be referred to [here](http://redis.io/commands).
