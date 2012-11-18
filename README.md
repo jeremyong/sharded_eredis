@@ -56,6 +56,7 @@ edit src/sharded_eredis.app.src
                   ]},
    {mod, { sharded_eredis_app, []}},
    {env, [
+           {global_or_local, local},
            {pools, [
                     {default, [
                                {size, 10},
@@ -70,6 +71,7 @@ Add new pools. This configuration specifies 4 shards.
 
 ```erlang
   {env, [
+          {global_or_local, local}
           {pools, [
                    {pool0, [
                               {size, 10},
@@ -99,6 +101,11 @@ Add new pools. This configuration specifies 4 shards.
         ]}
 ```
 
+The `global_or_local` option is used to determine whether the pools
+are registered as local or global. Personally, I start this
+application on every instance and run pools on each instance locally
+to minimize network latency.
+
 
 ## Examples
 
@@ -118,7 +125,7 @@ key-value set and get
 ```
 
 Note that the name of the pool does not need to be supplied with each
-query. The library will automatically determine which pool associated
+query (in contrast to prior behavior). The library will automatically determine which pool associated
 to the correct shard should be invoked.
  
 The Redis documentation can be referred to [here](http://redis.io/commands).
