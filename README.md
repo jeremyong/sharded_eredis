@@ -19,6 +19,16 @@ https://github.com/wooga/eredis
 poolboy:
 https://github.com/devinus/poolboy
 
+## Caveats!!
+
+This library uses Redis but in a distributed fashion. Multi-object
+operations are no longer guaranteed to be atomic and are not supported
+by this library. Examples include multisets, multigets,
+source-destination operations, and
+multi-object transactions. Transactions technically still work if all
+keys involved in the transaction are on the same machine but the Redis
+transaction was not built to be distributed.
+
 ## Setup
 
 - git clone git://github.com/jeremyong/sharded_eredis.git
