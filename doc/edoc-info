@@ -1,3 +1,4 @@
-{application,eredis_pool}.
+{application,sharded_eredis}.
 {packages,[]}.
-{modules,[eredis_pool,eredis_pool_app,eredis_pool_sup]}.
+{modules,[sharded_eredis,sharded_eredis_app,sharded_eredis_chash,
+          sharded_eredis_sup]}.
