@@ -10,7 +10,7 @@
 
 -spec lookup(term()) -> cnode().
 lookup(Key) ->
-    Ring = application:get_env(sharded_eredis, ring),
+    {ok, Ring} = application:get_env(sharded_eredis, ring),
     Hash = hash(Key),
     {{_, Node}, {_, Max}} =
         lists:foldl(fun({C, CNode}, {{L,LNode}, {U,UNode}}) ->
