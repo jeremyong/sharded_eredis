@@ -51,6 +51,9 @@ create_ring(Shards) ->
 hash(Key) when is_binary(Key) ->
     <<Hash:160/integer>> = crypto:sha(Key),
     Hash;
+hash(Key) when is_atom(Key) ->
+    <<Hash:160/integer>> = crypto:sha(list_to_binary(atom_to_list(Key))),
+    Hash;
 hash(Key) ->
     <<Hash:160/integer>> = crypto:sha(list_to_binary(Key)),
     Hash.

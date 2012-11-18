@@ -28,7 +28,7 @@ https://github.com/devinus/poolboy
 
 ## Testing
 
-make check
+make test
 
 ## Settings
 

@@ -41,26 +41,6 @@ basic_test_() ->
                  ?assertEqual({ok, undefined}, 
                               sharded_eredis:q(["GET", foo2]))
          end
-        },
-
-       { "mset and mget",
-         fun() ->
-                 Keys = lists:seq(1, 1000),
-
-                 ?assertMatch({ok, _}, sharded_eredis:q(["DEL" | Keys])),
-
-                 KeyValuePairs = [[K, K*2] || K <- Keys],
-                 ExpectedResult = 
-                     [list_to_binary(integer_to_list(K * 2)) || K <- Keys],
-
-                 ?assertEqual({ok, <<"OK">>}, 
-                              sharded_eredis:q(["MSET" | lists:flatten(KeyValuePairs)])),
-
-                 ?assertEqual({ok, ExpectedResult}, 
-                              sharded_eredis:q(["MGET" | Keys])),
-
-                 ?assertMatch({ok, _}, sharded_eredis:q(["DEL" | Keys]))
-         end
         }
 
       ]
