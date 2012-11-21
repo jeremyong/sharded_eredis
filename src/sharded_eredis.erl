@@ -18,7 +18,7 @@
 
 %% API
 -export([start/0, stop/0]).
--export([q/1, q/2, transaction/2]).
+-export([q/1, q/2, q2/2, q2/3, transaction/2]).
 
 %%%===================================================================
 %%% API functions
