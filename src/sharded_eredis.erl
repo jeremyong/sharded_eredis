@@ -59,11 +59,11 @@ transaction(Key, Fun) when is_function(Fun) ->
     Node = sharded_eredis_chash:lookup(Key),
     F = fun(C) ->
                 try
-                  {ok, <<"OK">>} = q2(C, ["MULTI"]),
+                  {ok, <<"OK">>} = eredis:q(C, ["MULTI"]),
                   Fun(),
-                  eredis:q2(C, ["EXEC"])
+                  eredis:q(C, ["EXEC"])
                 catch C:Reason ->
-                       {ok, <<"OK">>} = q2(C, ["DISCARD"]),
+                       {ok, <<"OK">>} = eredis:q(C, ["DISCARD"]),
                        io:format("Error in redis transaction. ~p:~p", 
                                  [C, Reason]),
                        {error, Reason}
