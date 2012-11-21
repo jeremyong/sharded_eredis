@@ -5,12 +5,12 @@
 -import(eredis, [create_multibulk/1]).
 
 -define(Setup, fun() -> application:start(sharded_eredis)  end).
--define(Clearnup, fun(_) -> application:stop(sharded_eredis)  end).
+-define(Cleanup, fun(_) -> application:stop(sharded_eredis)  end).
 
 basic_test_() ->
     {inparallel,
 
-     {setup, ?Setup, ?Clearnup,
+     {setup, ?Setup, ?Cleanup,
       [
 
        { "get and set",

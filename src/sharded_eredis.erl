@@ -60,7 +60,7 @@ transaction(Key, Fun) when is_function(Fun) ->
     F = fun(C) ->
                 try
                   {ok, <<"OK">>} = q2(C, ["MULTI"]),
-                  Fun(C),
+                  Fun(),
                   eredis:q2(C, ["EXEC"])
                 catch C:Reason ->
                        {ok, <<"OK">>} = q2(C, ["DISCARD"]),
