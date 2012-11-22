@@ -1,5 +1,7 @@
 # sharded_eredis
 
+Copyright (c) 2012 PlayMesh, Inc.
+
 **sharded_eredis** is collection of pools of Redis clients, using eredis
 and poolboy. Each pool points to a different shard.
 
