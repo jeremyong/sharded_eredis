@@ -1,12 +1,8 @@
 %%%-------------------------------------------------------------------
-%%% @author Hiroe Shin <shin@mac-hiroe-orz-17.local>
-%%% @copyright (C) 2011, Hiroe Shin
-%%% @doc
-%%%
-%%% @end
-%%% Created :  9 Oct 2011 by Hiroe Shin <shin@mac-hiroe-orz-17.local>
 %%% @author Jeremy Ong <jeremy@playmesh.com>
+%%% @copyright (C) 2012, PlayMesh, Inc.
 %%%-------------------------------------------------------------------
+
 -module(sharded_eredis).
 
 %% Include

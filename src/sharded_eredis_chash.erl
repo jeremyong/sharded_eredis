@@ -1,3 +1,8 @@
+%%%-------------------------------------------------------------------
+%%% @author Jeremy Ong <jeremy@playmesh.com>
+%%% @copyright (C) 2012, PlayMesh, Inc.
+%%%-------------------------------------------------------------------
+
 -module(sharded_eredis_chash).
 
 -export([lookup/1, create_ring/1]).

@@ -1,3 +1,8 @@
+%%%-------------------------------------------------------------------
+%%% @author Jeremy Ong <jeremy@playmesh.com>
+%%% @copyright (C) 2012, PlayMesh, Inc.
+%%%-------------------------------------------------------------------
+
 {application, sharded_eredis,
  [
   {description, ""},
