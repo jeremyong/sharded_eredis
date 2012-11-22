@@ -14,18 +14,4 @@
                  ]},
   {mod, { sharded_eredis_app, []}},
   {env, []}
-
-%% sample configuration.
-%%
-%%  {env, [
-%%          {global_or_local, local},
-%%          {pools, [
-%%                   {dbsrv, [
-%%                              {size, 10},
-%%                              {max_overflow, 30}
-%%                             ]}
-%%	          ]}
-%%        ]}
-%%
-
 ]}.

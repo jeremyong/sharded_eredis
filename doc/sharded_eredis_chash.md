@@ -6,7 +6,10 @@
 * [Function Details](#functions)
 
 
+Copyright (c) (C) 2012, PlayMesh, Inc.
+-------------------------------------------------------------------
 
+__Authors:__ Jeremy Ong ([`jeremy@playmesh.com`](mailto:jeremy@playmesh.com)).
 <a name="types"></a>
 
 ##Data Types##

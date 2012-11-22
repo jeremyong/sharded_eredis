@@ -12,13 +12,10 @@
 %% Specified in http://www.erlang.org/doc/man/gen_server.html#call-3
 -define(TIMEOUT, 5000).
 
-%% API
 -export([start/0, stop/0]).
--export([q/1, q/2, q2/2, q2/3, transaction/2]).
 
-%%%===================================================================
-%%% API functions
-%%%===================================================================
+%% API
+-export([q/1, q/2, q2/2, q2/3, transaction/2]).
 
 start() ->
     application:start(?MODULE).
@@ -26,31 +23,24 @@ start() ->
 stop() ->
     application:stop(?MODULE).
 
-%%--------------------------------------------------------------------
-%% @doc
-%% Executes the given command in the specified connection. The
-%% command must be a valid Redis command and may contain arbitrary
-%% data which will be converted to binaries. The returned values will
-%% always be binaries.
-%% @end
-%%--------------------------------------------------------------------
-
-
+%% @doc Query the redis server using eredis. Automatically hashes
+%% the key and selects the correct shard
 -spec q(Command::iolist()) ->
     {ok, binary() | [binary()]} | {error, Reason::binary()}.
-
 q(Command) ->
     q(Command, ?TIMEOUT).
 
 -spec q(Command::iolist(), Timeout::integer()) ->
     {ok, binary() | [binary()]} | {error, Reason::binary()}.
-
 q(Command = [_, Key|_], Timeout) ->
     Node = sharded_eredis_chash:lookup(Key),
     poolboy:transaction(Node, fun(Worker) ->
                                       eredis:q(Worker, Command, Timeout)
                               end).
 
+%% @doc Supply a key and a function to perform a transaction.
+%% It is NOT CHECKED but assumed that the function only performs operations
+%% on that key or keys sharing the same node as that key.
 transaction(Key, Fun) when is_function(Fun) ->
     Node = sharded_eredis_chash:lookup(Key),
     F = fun(C) ->
@@ -65,9 +55,9 @@ transaction(Key, Fun) when is_function(Fun) ->
                        {error, Reason}
                end
     end,
-
     poolboy:transaction(Node, F).    
 
+%% @doc q2 is similar to q but allows the user to specify the node
 -spec q2(Node::term(), Command::iolist()) ->
     {ok, binary() | [binary()]} | {error, Reason::binary()}.
 q2(Node, Command) ->

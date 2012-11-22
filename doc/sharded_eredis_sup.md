@@ -5,7 +5,12 @@
 * [Function Details](#functions)
 
 
-__Behaviours:__ [`supervisor`](supervisor.md).<a name="index"></a>
+Copyright (c) (C) 2012, PlayMesh, Inc.
+-------------------------------------------------------------------
+
+__Behaviours:__ [`supervisor`](supervisor.md).
+
+__Authors:__ Jeremy Ong ([`jeremy@playmesh.com`](mailto:jeremy@playmesh.com)).<a name="index"></a>
 
 ##Function Index##
 

@@ -19,9 +19,7 @@
 %% Helper macro for declaring children of supervisor
 -define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
 
-%% ===================================================================
 %% API functions
-%% ===================================================================
 
 start_link() ->
     {ok, Pools} = application:get_env(sharded_eredis, pools),
@@ -31,9 +29,7 @@ start_link() ->
 start_link(Pools, GlobalOrLocal) ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, [Pools, GlobalOrLocal]).
 
-%% ===================================================================
 %% Supervisor callbacks
-%% ===================================================================
 
 init([Pools, GlobalOrLocal]) ->
     RestartStrategy = one_for_one,
@@ -54,10 +50,8 @@ init([Pools, GlobalOrLocal]) ->
                                   Args = [{name, {GlobalOrLocal, PoolName}},
                                           {worker_module, eredis}]
                                       ++ PoolConfig,
-                                  
                                   {PoolName, {poolboy, start_link, [Args]},
                                    Restart, Shutdown, Type, []}
                           end, Pools),
-
     {ok, {SupFlags, PoolSpecs}}.
 
