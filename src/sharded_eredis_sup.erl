@@ -41,10 +41,8 @@ init([Pools, GlobalOrLocal]) ->
     Restart = permanent,
     Shutdown = 5000,
     Type = worker,
-    
-    {Nodes, _} = lists:unzip(Pools),
-    Ring = sharded_eredis_chash:create_ring(Nodes),
-    ok = application:set_env(sharded_eredis, ring, Ring),
+
+    sharded_eredis_chash:store_ring(),
 
     PoolSpecs = lists:map(fun({PoolName, PoolConfig}) ->
                                   Args = [{name, {GlobalOrLocal, PoolName}},
@@ -54,4 +52,3 @@ init([Pools, GlobalOrLocal]) ->
                                    Restart, Shutdown, Type, []}
                           end, Pools),
     {ok, {SupFlags, PoolSpecs}}.
-
